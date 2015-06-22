@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>JS 旋转函数，兼容各个浏览器</title>
+<script id="jscode">
+function hy_rotate(obj, rotate){
+ if(obj){
+  function rotate_set_style(obj, key, value){
+   obj.style[key] = value;
+  }
+  
+  function rotate_float(n, b){
+   b = isNaN(parseInt(b)) ? -1 : parseInt(b);
+   return isNaN(parseFloat(n)) ? 0 : (b == 0) ? parseInt(parseFloat(n)) : (b > 0) ? parseFloat(parseFloat(n).toString().replace((new RegExp('^(\\d+)\\.(\\d{'+b+'})\\d*$')), '$1.$2')) : parseFloat(n);
+  }
+  
+  rotate = rotate % 360;
+  if(rotate < 0){
+   rotate = 360 + rotate
+  }
+  rotate =  rotate_float(rotate, 2);
+       
+  var rpi = rotate * Math.PI / 180, c = Math.cos(rpi), s = Math.sin(rpi), oh = obj.offsetHeight, ow = obj.offsetWidth, pw = rotate_float((oh * Math.abs(s) + ow * Math.abs(c)), 2), ph = rotate_float((oh * Math.abs(c) + ow * Math.abs(s)), 2), tw = (rotate % 180 == 0) ? 0 : ((pw - ow) / 2), th = (rotate % 180 == 0) ? 0 : ((ph - oh) / 2), css3 = 'translate(' + tw + 'px, ' + th + 'px) rotate(' + rotate + 'deg)', css3key = '', dbstyle = document.body.style, css3keys = ['transform', '-moz-transform', '-webkit-transform', '-o-transform', '-ms-transform'];
+  
+  for(var i in css3keys){
+   if(css3keys[i] in dbstyle){
+    css3key = css3keys[i];
+   }
+  }
+  
+  if(css3key == ''){
+   rotate_set_style(obj, 'filter', 'progid:DXImageTransform.Microsoft.Matrix(M11=' + c + ', M12=' + (-s) + ', M21=' + s + ', M22=' + c + ', sizingMethod=\'auto expand\')');
+  }else{
+   obj.parentNode.style.width  = pw + 'px';
+   obj.parentNode.style.height = ph + 'px';
+   rotate_set_style(obj, css3key, css3);
+  }
+ }
+}
+</script>
+<style>
+.list{clear:both; padding:20px;}
+.block{background:#FF99FF; padding:5px; float:left;}
+.rotate{background:#FF0000; width:200px; padding:5px;}
+.txt{background:#3366FF; padding:10px; color:#FFFFFF; font-size:12px; margin-bottom:10px;}
+.code{border:#3333FF dotted 1px; padding:10px; background:#FFCCFF; clear:both;}
+</style>
+</head>
+<body>
+<div>JS 旋转函数，兼容各个浏览器</div>
+<div class="list">
+    <div class="block">
+     <div>
+         <div class="rotate" id="rotate">
+             <div class="txt">
+                 我的角度是 <span id="rotate_num"></span>°
+                </div>
+                <img src="http://www.fjsen.com/images/attachement/jpg/site2/20130513/001b77b4c2f212fa86172f.jpg" />
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+ function $id(id){
+  return document.getElementById(id);
+ }
+ var rrr = 0;
+ var sss = 0;
+ var iii = 0;
+ var aaa = $id('rotate');
+ var bbb = $id('rotate_num');
+ function zzz(){
+  rrr = rrr+1;
+  bbb.innerHTML = rrr;
+  hy_rotate(aaa, rrr);
+ }
+ aaa.onclick = function(){
+  if(sss == 0){
+   iii = setInterval(zzz, 20);;
+   sss = 1;
+  }else{
+   clearInterval(iii);
+   sss = 0;
+  }
+ } 
+ 
+</script>
+</body>
+</html>
